@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/amaralneto10/trabalho-javascript/issues"
   },
-  "homepage": "https://github.com/amaralneto10/trabalho-javascript#readme"
+  "homepage": "https://github.com/amaralneto10/trabalho-javascript#readme",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
 }
