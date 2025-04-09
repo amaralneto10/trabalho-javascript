@@ -1,6 +1,5 @@
-import fs from 'fs/Promise'
-const prompt = require('prompt-sync')()
+// import fs from 'fs/Promise'
+import { mostrarMenu } from "./auxiliary_functions.js"
 
-const menu = () => {
-    console
-}
+mostrarMenu()
+
