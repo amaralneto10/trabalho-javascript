@@ -1,23 +1,15 @@
 {
-  "name": "trabalho-javascript",
+  "name": "trabalho-gerenciador-de-tarefas",
   "version": "1.0.0",
-  "description": "Trabalho Prático - JavaScript para Back-end Sistema de Gerenciamento de Tarefas",
-  "main": "index.js",
+  "main": "main.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/amaralneto10/trabalho-javascript.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/amaralneto10/trabalho-javascript/issues"
-  },
-  "homepage": "https://github.com/amaralneto10/trabalho-javascript#readme",
+  "description": "",
   "dependencies": {
     "prompt-sync": "^4.2.0"
   }
