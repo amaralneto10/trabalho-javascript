@@ -10,7 +10,7 @@ async function lerTarefas() {
         return JSON.parse(dados)
     } catch (error) {
         console.log(`Algo não se saiu bem: ${error.message}`)
-        return []
+        return undefined
     }
 }
 
