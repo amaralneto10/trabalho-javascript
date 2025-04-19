@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 const prompt = PromptSync()
 
 const filePath = './tarefas.json'
-const userPath = './usuarios.js'
+const userPath = './usuarios.json'
 
 // AUTENTICAÇÃO
 async function lerUsuarios() {
@@ -32,14 +32,67 @@ const cadastrarUsuario = async () => {
         return
     }
 
-    const senha = prompt("Digite sua senha" , { echo: '' })
+    const senha = prompt("Digite sua senha: ", { echo: '' })
     const senhaCriptografada = await bcrypt.hash(senha, 10)
 
     usuarios.push({ usuario, senha: senhaCriptografada})
     await escreverUsuarios(usuarios)
     console.log(`O usuário ${usuario} foi cadastrado com sucesso!`)
+    await fluxoCode()
 }
-await cadastrarUsuario()
+
+const login = async () => {
+    const usuarios = await lerUsuarios()
+
+    const usuarioInput = prompt('Digite seu usuário: ')
+    const existe = usuarios.find(u => u.usuario === usuarioInput)
+    if (!existe) {
+        console.log('Usuário inexistente. Cadastre-se para acessar!')
+        await new Promise(resolve => setTimeout(resolve, 3000))
+        return await fluxoCode()
+    }
+
+    const senhaInput = prompt('Digite sua senha: ', { echo: '' })
+    const senhaCorreta = await bcrypt.compare(senhaInput, existe.senha)
+
+    if (senhaCorreta) {
+        console.log(`Login efetuado com sucesso! Bem vindo ${usuarioInput}`)
+        await new Promise(resolve => setTimeout(resolve, 3000))
+        return await menu()
+    } else {
+        
+    }
+}
+
+const fluxoCode = async () => {
+    let opcao = ''
+    do {
+        console.clear()
+        console.log('=== ÁREA DE LOGIN ===')
+        console.log('1. Fazer login')
+        console.log('2. Cadastrar usuário')
+        console.log('3. Sair do sistema')
+
+        opcao = prompt('Digite a opção: ')
+
+        switch (opcao) {
+            case '1':
+                await login()
+                break;
+            case '2':
+                await cadastrarUsuario()
+                break
+            case '3':
+                console.log('Saindo...')
+                break    
+            default:
+                console.log('Opção invalida. Tente novamente!')
+                break;
+        }
+    }while (opcao !== '3')
+}
+await fluxoCode()
+
 async function lerTarefas() {
     try {
         const dados = await fs.readFile(filePath, 'utf-8')
@@ -215,4 +268,4 @@ async function menu() {
     } while (opcao !== '7')
 }
 
-await menu()
+// await menu()
