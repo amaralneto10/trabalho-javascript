@@ -1,9 +1,45 @@
 import fs from 'fs/promises'
 import PromptSync from 'prompt-sync'
+import bcrypt from 'bcrypt'
 const prompt = PromptSync()
 
 const filePath = './tarefas.json'
+const userPath = './usuarios.js'
 
+// AUTENTICAÇÃO
+async function lerUsuarios() {
+    try {
+        const dados = await fs.readFile(userPath, 'utf-8')
+        return JSON.parse(dados)
+    } catch (error) {
+        console.log(`Erro em ler usuarios: ${error.message}`)
+        return undefined
+    }
+}
+
+async function escreverUsuarios(escreverUser) {
+    await fs.writeFile(userPath, JSON.stringify(escreverUser, null, 2), 'utf-8')
+    console.log("Arquivo atualizado com sucesso!")
+}
+
+const cadastrarUsuario = async () => {
+    const usuarios = await lerUsuarios()
+
+    const usuario = prompt("Digite seu usuário: ")
+    const existe = usuarios.find(u => u.usuario === usuario)
+    if (existe) {
+        console.log('Usuário existente!')
+        return
+    }
+
+    const senha = prompt("Digite sua senha" , { echo: '' })
+    const senhaCriptografada = await bcrypt.hash(senha, 10)
+
+    usuarios.push({ usuario, senha: senhaCriptografada})
+    await escreverUsuarios(usuarios)
+    console.log(`O usuário ${usuario} foi cadastrado com sucesso!`)
+}
+await cadastrarUsuario()
 async function lerTarefas() {
     try {
         const dados = await fs.readFile(filePath, 'utf-8')
@@ -24,9 +60,10 @@ async function criarTarefa() {
     const titulo = prompt('Digite o título: ')
     const descricao = prompt('Digite a descrição: ')
     const tarefas = await lerTarefas()
-    const novoId = tarefas.reduce((max, t) => {
-        return t.id > max ? t.id : max
-    }, 0) + 1
+    const novoId = tarefas[tarefas.length - 1].id + 1 // METODO UTILIZADO EM SALA DE AULA - MAIS EFICAZ
+    // const novoId = tarefas.reduce((max, t) => {
+    //     return t.id > max ? t.id : max
+    // }, 0) + 1 ARQUIVO CRIADO INICIALMENTE
     
 
     const novaTarefa = {
@@ -108,6 +145,33 @@ async function concluirTarefa() {
     console.log(`Tarefa ${tarefa.titulo} foi concluída com sucesso!`)
 }
 
+const excluirTarefa = async () => {
+    const tarefas =  await lerTarefas()
+
+    if (tarefas.length === 0) {
+        console.log('Nenhuma tarefa encontrada!')
+    }
+
+    console.log("Tarefas disponíveis:")
+    tarefas.forEach((tarefa, index) => {
+        console.log(`${index + 1}. Título: ${tarefa.titulo}, Descrição: ${tarefa.descricao}`)
+    })
+
+    const escolhaExcluir = +prompt('Digite o ID da tarefa que você deseja excluir: ')
+    const index = tarefas.findIndex(t => t.id === escolhaExcluir)
+
+    // O -1 é quando ele não encontra o item dentro do array
+    if (index === -1) {
+        console.log('Tarefa não encontrada.')
+        return
+    }
+
+    // Para observarmos a tarefa excluída
+    const tarefaRemovida = tarefas.splice(index, 1)[0]
+    await escreverArquivo(tarefas)
+    console.log(`Tarefa "${tarefaRemovida.titulo}" foi excluída com sucesso!`)
+}
+
 
 async function menu() {
     let opcao = ''
@@ -119,7 +183,8 @@ async function menu() {
         console.log('3 - Visualizar apenas tarefas concluídas')
         console.log('4 - Visualizar apenas tarefas não concluídas')
         console.log('5 - Concluir uma tarefa')
-        console.log('6 - Sair')
+        console.log('6 - Excluir uma tarefa')
+        console.log('7 - Sair')
 
         opcao = prompt('Escolha a sua opção: ')
 
@@ -140,12 +205,14 @@ async function menu() {
                 await concluirTarefa()
                 break
             case '6':
+                await excluirTarefa()    
+            case '7':
                 console.log('Saindo...')
                 break                
             default:
                 console.log('Opção invalida. Tente novamnete!')
         }
-    } while (opcao !== '6')
+    } while (opcao !== '7')
 }
 
 await menu()
