@@ -59,9 +59,32 @@ const login = async () => {
         console.log(`Login efetuado com sucesso! Bem vindo ${usuarioInput}`)
         await new Promise(resolve => setTimeout(resolve, 3000))
         return await menu()
-    } else {
-        
     }
+
+    if(!senhaCorreta) {
+        return alterarSenha()
+    }
+}
+
+const alterarSenha = async () => {
+    const usuarios = await lerUsuarios()
+
+    console.log('== Recupere sua senha ==')
+    const usuario = prompt('Digite seu usuário: ')
+    const existe = usuarios.find(u => u.usuario === usuario)
+
+    if (!existe) {
+        console.log('Usuário inexistente!')
+        return await fluxoCode()
+    }
+
+    const novaSenha = prompt('Digite sua nova senha: ', { echo: ''}) // echo funciona para esconder a senha enquanto digita.
+    const novaSenhaCriptografada = await bcrypt.hash(novaSenha, 10)
+
+    existe.senha = novaSenhaCriptografada
+    
+    await escreverUsuarios(usuarios)
+    console.log(`Senha do usuário ${usuario} modificada com sucesso!`)
 }
 
 const fluxoCode = async () => {
@@ -71,7 +94,8 @@ const fluxoCode = async () => {
         console.log('=== ÁREA DE LOGIN ===')
         console.log('1. Fazer login')
         console.log('2. Cadastrar usuário')
-        console.log('3. Sair do sistema')
+        console.log('3. Altere sua senha')
+        console.log('4. Sair do sistema')
 
         opcao = prompt('Digite a opção: ')
 
@@ -83,13 +107,16 @@ const fluxoCode = async () => {
                 await cadastrarUsuario()
                 break
             case '3':
+                await alterarSenha()
+                break    
+            case '4':
                 console.log('Saindo...')
                 break    
             default:
                 console.log('Opção invalida. Tente novamente!')
                 break;
         }
-    }while (opcao !== '3')
+    }while (opcao !== '4')
 }
 await fluxoCode()
 
@@ -203,6 +230,7 @@ const excluirTarefa = async () => {
 
     if (tarefas.length === 0) {
         console.log('Nenhuma tarefa encontrada!')
+        return
     }
 
     console.log("Tarefas disponíveis:")

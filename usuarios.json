@@ -6,5 +6,21 @@
   {
     "usuario": "Marcos William",
     "senha": "$2b$10$jiH3/5wRIx4A/ezoLRXbzOxPwEI2DF.3dlQLEznfHnYwtVDnomj6."
+  },
+  {
+    "usuario": "Frank",
+    "senha": "$2b$10$YbH0orhHtzLhXvaRlMRDxOfQs5pNtBitPgOZpl9VGoWDDqhEwc9y2"
+  },
+  {
+    "usuario": "Felipe",
+    "senha": "$2b$10$YNiyAdswoLjFUCngJnM8YedZpRweFscNksYyMRiSQSeys2D63IXmO"
+  },
+  {
+    "usuario": "Jonas Fortes",
+    "senha": "$2b$10$3IyrXBjfEm1Km0cbwNnrmOiBqPhWtgbc22033AhgE2Z5jXvi56fI."
+  },
+  {
+    "usuario": "Assis",
+    "senha": "$2b$10$coi2iGzZyHNzkYwIvJ/0WOIvU9zNdVu3VIXM/2F72Kc/oIOk75JoG"
   }
 ]
